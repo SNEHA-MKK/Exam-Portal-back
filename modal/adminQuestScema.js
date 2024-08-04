@@ -5,32 +5,32 @@ const adminQuestSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    title: {
+    question: {
         type: String,
         required: true
     },
-    description: {
-        type: String,
+    option1: {
+        type: String, // Array of strings for options
         required: true
     },
-    maxMarks: {
-        type: Number,
+    option2: {
+        type: String, // Array of strings for options
         required: true
     },
-    numberOfQuestions: {
-        type: Number,
+    option3: {
+        type: String, // Array of strings for options
         required: true
     },
-    publish: {
-        type: Boolean,
-        default: false
+    option4: {
+        type: String, // Array of strings for options
+        required: true
     },
-    category: {
+    answer: {
         type: String,
         required: true
     }
 })
 
-const admins = mongoose.model("adminQuestion", adminQuestSchema)
+const adminsQuest = mongoose.model("adminquestions", adminQuestSchema)
 
-module.exports = admins
+module.exports = adminsQuest

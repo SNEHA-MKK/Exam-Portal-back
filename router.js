@@ -42,7 +42,16 @@ router.post('/admin-quizz/:id',jwtMiddleware,adminController.addAdmQuiz)
 router.get('/admin-getquiz/:id',jwtMiddleware,adminController.getAllAdmQuiz)
 
 //path to add a question-admin
-router.post('/admin-question/:id',jwtMiddleware,adminController.addAdmQuiz)
+router.post('/admin-question/:id',jwtMiddleware,adminController.addAdmQuestion)
+
+//get all admin questions
+router.get('/admin-getquestion/:id',jwtMiddleware,adminController.getAllAdmQuestion)
+
+//get all user quiz
+router.get('/user-getquiz',userMiddleware,adminController.getAllUserQuiz)
+
+//get all user questions
+router.get('/user-getquestion/:id',userMiddleware,adminController.getAllUserQuestion)
 
 //EXPORT ROUTER
 module.exports = router

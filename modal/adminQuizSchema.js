@@ -31,6 +31,6 @@ const adminQuizSchema = new mongoose.Schema({
     }
 })
 
-const admins = mongoose.model("adminQuiz", adminQuizSchema)
+const adminsQuiz = mongoose.model("adminquizzes", adminQuizSchema)
 
-module.exports = admins
+module.exports = adminsQuiz

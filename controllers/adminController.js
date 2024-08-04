@@ -1,7 +1,8 @@
 const admins = require('../modal/adminProfileSchema')
 const adminCat = require('../modal/adminCategorySchema')
 const adminQuiz = require('../modal/adminQuizSchema')
-const adminsP = require("../modal/adminSchema")
+// const adminsP = require("../modal/adminSchema")
+const adminQuestion = require('../modal/adminQuestScema')
 
 
 //add admin profile details
@@ -50,35 +51,35 @@ exports.addAdCategory = async (req, res) => {
   // 66a76e113798ff1485a90b93
 
   // const adminIds = await adminsP.findById(adminid)
-  
+
   // console.log(`Admin pid dsfjh fhg : ${adminIds}`);
 
   // const{_id ,email ,password}=adminIds
   // console.log(_id ,email ,password);
   // if(adminid==_id){
-    const { title, description } = req.body
-    console.log(title, description);
-  
-    try {
-  
-      const existingCategory = await adminCat.findOne({ title })
-      //   console.log(lsjf);
-      if (existingCategory) {
-        res.status(406).json('Already Exist')
-      } else {
-        const newCategory = new adminCat({
-          title, description
-        })
-        await newCategory.save() //to save the project in mongodb
-        res.status(200).json(newCategory)
-      }
-  
-    } catch (error) {
-      res.status(401).json(`requested due to ${error}`)
-      console.log(error);
+  const { title, description } = req.body
+  console.log(title, description);
+
+  try {
+
+    const existingCategory = await adminCat.findOne({ title })
+    //   console.log(lsjf);
+    if (existingCategory) {
+      res.status(406).json('Already Exist')
+    } else {
+      const newCategory = new adminCat({
+        title, description
+      })
+      await newCategory.save() //to save the project in mongodb
+      res.status(200).json(newCategory)
     }
+
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+    console.log(error);
   }
-  
+}
+
 // }
 
 //get admin category
@@ -154,12 +155,15 @@ exports.updateCatController = async (req, res) => {
 // }
 
 exports.addAdmQuiz = async (req, res) => {
+  console.log('inside quiz controller');
 
   const { id } = req.params
   const { title, description, maxMarks, numberOfQuestions, publish, category } = req.body;
 
   try {
     const existingQuiz = await adminQuiz.findOne({ title });
+
+    console.log('inside quiz kjrg controller');
     if (existingQuiz) {
       return res.status(406).json('Already Exist');
     }
@@ -186,11 +190,11 @@ exports.getAllAdmQuiz = async (req, res) => {
 
   const { id } = req.params
   console.log(id);
-  
+
 
   try {
 
-    const allQuiz = await adminQuiz.find({id:id})
+    const allQuiz = await adminQuiz.find({ id: id })
     res.status(200).json(allQuiz)
 
   } catch (error) {
@@ -200,33 +204,87 @@ exports.getAllAdmQuiz = async (req, res) => {
 
 
 //to add admin que
-exports.addAdmQuiz = async (req, res) => {
+exports.addAdmQuestion = async (req, res) => {
 
   const { id } = req.params
-  const { title, description, maxMarks, numberOfQuestions, publish, category } = req.body;
+
+  const { question, option1, option2, option3, option4, answer } = req.body;
 
   try {
-    const existingQuiz = await adminQuiz.findOne({ title });
-    if (existingQuiz) {
-      return res.status(406).json('Already Exist');
+    const existingQuestion = await adminQuestion.findOne({ question });
+
+    if (existingQuestion) {
+      return res.status(406).json('Question already exists');
     }
 
-    const newQuiz = new adminQuiz({
+    const newQuestion = new adminQuestion({
       id,
-      title,
-      description,
-      maxMarks,
-      numberOfQuestions,
-      publish,
-      category
+      question,
+      option1,
+      option2,
+      option3,
+      option4,
+      answer
+
     });
 
-    await newQuiz.save();
-    res.status(200).json(newQuiz);
+    await newQuestion.save();
+    res.status(200).json(newQuestion);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to add Quiz', error });
+    console.error('Error adding question:', error);
+    res.status(500).json(`Failed to add question: ${error.message}`);
   }
 };
+
+//get admin question
+exports.getAllAdmQuestion = async (req, res) => {
+
+  const { id } = req.params
+  console.log(id);
+
+
+  try {
+
+    const allQuestion = await adminQuestion.find({ id: id })
+    res.status(200).json(allQuestion)
+
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+  }
+}
+
+//get user quiz
+exports.getAllUserQuiz = async (req, res) => {
+
+  // const { id } = req.params
+  // console.log(id);
+
+  try {
+
+    const allQuiz = await adminQuiz.find()
+    res.status(200).json(allQuiz)
+
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+  }
+}
+
+//get admin question
+exports.getAllUserQuestion = async (req, res) => {
+
+  const { id } = req.params
+  console.log(id);
+
+
+  try {
+
+    const allQuestion = await adminQuestion.find({ id: id })
+    res.status(200).json(allQuestion)
+
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+  }
+}
 
 
 
