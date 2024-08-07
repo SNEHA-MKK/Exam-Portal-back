@@ -320,6 +320,17 @@ exports.evaluateUserAnswers = async (req, res) => {
     const quiz = await adminQuiz.find({ _id: id })
     console.log(quiz[0]);
 
+    const uId = req.payload
+    const qId = quiz[0].title
+
+    const existingResult = await userResult.findOne({ userId: uId, quizId: qId })
+
+    if (existingResult) {
+      console.log('already exists');
+      return res.status(400).json({ message: 'User has already attended this quiz' });
+
+
+    }
 
     // Save the result
     const quizResult = new userResult({
@@ -354,7 +365,7 @@ exports.getUserResults = async (req, res) => {
 
   try {
 
-    const userResults = await userResult.find({userId})
+    const userResults = await userResult.find({ userId })
     res.status(200).json(userResults)
 
   } catch (error) {
@@ -364,15 +375,15 @@ exports.getUserResults = async (req, res) => {
 
 //get Admin results
 exports.getAdminResults = async (req, res) => {
-const jshd = req.params
+  const jshd = req.params
 
   try {
 
     console.log('inside');
-    
+
     const userResults = await userResult.find()
     console.log(userResults);
-    
+
     res.status(200).json(userResults)
 
   } catch (error) {
