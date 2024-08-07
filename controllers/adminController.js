@@ -3,6 +3,8 @@ const adminCat = require('../modal/adminCategorySchema')
 const adminQuiz = require('../modal/adminQuizSchema')
 // const adminsP = require("../modal/adminSchema")
 const adminQuestion = require('../modal/adminQuestScema')
+const userResult = require('../modal/userResultSchema')
+
 
 
 //add admin profile details
@@ -286,7 +288,101 @@ exports.getAllUserQuestion = async (req, res) => {
   }
 }
 
+// To evaluate user answers
+exports.evaluateUserAnswers = async (req, res) => {
+  const { id } = req.params; // quiz id
+  const { userAnswers } = req.body; // user's answers { questionId: answer, ... }
+  // const userids = req.payload
+
+  console.log('Evaluating answers for quiz:', id);
+  console.log('User answers:', userAnswers);
+
+  try {
+    const questions = await adminQuestion.find({ id }); // find questions for the given quiz id
+    console.log(questions);
+
+
+    if (!questions.length) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    let score = 0;
+
+    questions.forEach(question => {
+      const userAnswer = userAnswers[question._id];
+      if (userAnswer && userAnswer === question[`option${question.answer.slice(-1)}`]) {
+        score++;
+      }
+    });
+
+    console.log(score);
+
+    const quiz = await adminQuiz.find({ _id: id })
+    console.log(quiz[0]);
+
+
+    // Save the result
+    const quizResult = new userResult({
+      userId: req.payload, // Assuming req.payload contains userId from the middleware
+      quizId: quiz[0].title,
+      category: quiz[0].category, // Assuming all questions belong to the same category
+      score,
+      total: questions.length
+    });
+
+    console.log(quizResult);
+
+    await quizResult.save();
+
+    console.log('jhgh')
+    console.log(quizResult);
+
+
+    res.status(200).json({ score, total: questions.length });
+  } catch (error) {
+    res.status(500).json({ message: `Failed to evaluate answers: ${error.message}` });
+  }
+};
+
+//get user results
+exports.getUserResults = async (req, res) => {
+
+  // const { id } = req.params
+  // console.log(id);
+  const userId = req.payload
+
+
+  try {
+
+    const userResults = await userResult.find({userId})
+    res.status(200).json(userResults)
+
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+  }
+}
+
+//get Admin results
+exports.getAdminResults = async (req, res) => {
+const jshd = req.params
+
+  try {
+
+    console.log('inside');
+    
+    const userResults = await userResult.find()
+    console.log(userResults);
+    
+    res.status(200).json(userResults)
+
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+  }
+}
 
 
 
-// 66a76e113798ff1485a90b93
+
+
+
+

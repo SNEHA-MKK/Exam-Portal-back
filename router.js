@@ -53,5 +53,15 @@ router.get('/user-getquiz',userMiddleware,adminController.getAllUserQuiz)
 //get all user questions
 router.get('/user-getquestion/:id',userMiddleware,adminController.getAllUserQuestion)
 
+//evaluate users answers
+router.post('/evaluate-answers/:id', userMiddleware, adminController.evaluateUserAnswers);
+
+//get all user results
+router.get('/user-results',userMiddleware,adminController.getUserResults)
+
+//get all ADmin user results
+router.get('/admin-results',jwtMiddleware,adminController.getAdminResults)
+
+
 //EXPORT ROUTER
 module.exports = router

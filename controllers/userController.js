@@ -1,7 +1,7 @@
 const users = require("../modal/userSchema");
 const admins = require("../modal/adminSchema")
 const jwt = require('jsonwebtoken')
-
+// const userResult = require('../modal/userResultSchema')
 
 //logic to resolve the register request
 exports.register = async (req, res) => {
@@ -75,4 +75,6 @@ exports.login = async (req, res) => {
         res.status(401).json(`request failed due to ${error}`)
     }
 }
+
+
 
