@@ -335,10 +335,11 @@ exports.evaluateUserAnswers = async (req, res) => {
     // Save the result
     const quizResult = new userResult({
       userId: req.payload, // Assuming req.payload contains userId from the middleware
-      quizId: quiz[0].title,
+      quizId: quiz[0].title,   // quiz[0].title,
       category: quiz[0].category, // Assuming all questions belong to the same category
       score,
-      total: questions.length
+      total: questions.length,
+
     });
 
     console.log(quizResult);
@@ -390,6 +391,47 @@ exports.getAdminResults = async (req, res) => {
     res.status(401).json(`requested due to ${error}`)
   }
 }
+
+exports.quizTopper = async (req, res) => {
+
+  console.log('topper controller');
+  
+  const { id } = req.params; // quiz id
+  
+  console.log('quiz id:', id);
+  
+
+  try {
+   console.log('inside try');
+
+   const quiz = await adminQuiz.findOne({_id:id})
+   console.log(quiz.title);
+   
+   
+    const topper = await userResult.find({ quizId:quiz.title }); // find questions for the given quiz id
+    console.log(topper);
+
+
+    if (!topper.length) {
+      return res.status(404).json({ message: "No one attended the quiz" });
+    }
+
+   
+     let QuizTopper = topper[0]
+     topper.forEach(topper => {
+        if(topper.score>QuizTopper.score){
+          QuizTopper=topper;
+        }
+     });
+
+   console.log(QuizTopper);
+   
+   res.status(200).json(QuizTopper);
+    
+  } catch (error) {
+    res.status(500).json({ message: `Failed to evaluate answers: ${error.message}` });
+  }
+};
 
 
 

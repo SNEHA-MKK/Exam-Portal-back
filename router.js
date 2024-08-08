@@ -62,6 +62,9 @@ router.get('/user-results',userMiddleware,adminController.getUserResults)
 //get all ADmin user results
 router.get('/admin-results',jwtMiddleware,adminController.getAdminResults)
 
+//topper - quiz wise
+router.get('/postQuiz-topper/:id',jwtMiddleware,adminController.quizTopper);
+
 
 //EXPORT ROUTER
 module.exports = router
