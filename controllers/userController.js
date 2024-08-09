@@ -7,8 +7,8 @@ const jwt = require('jsonwebtoken')
 exports.register = async (req, res) => {
 
     console.log('inside register controller');
-    const { username, email, password } = req.body
-    console.log(username, email, password);
+    const { username, email, password, phone, qualification } = req.body
+    console.log(username, email, password, phone, qualification);
 
     try {
 
@@ -22,7 +22,8 @@ exports.register = async (req, res) => {
                 username,
                 mailId: email,
                 password,
-                profile: ""
+                phone,
+                qualification
             })
             //to save the data in the mongodb
 
@@ -47,7 +48,7 @@ exports.login = async (req, res) => {
     try {
         const existingUser = await users.findOne({ mailId: email, password })
         const adminUser = await admins.findOne({ email, password })
-   
+
         if (!existingUser && !adminUser) {
             return res.status(404).json('No account found with this email. Please register.');
         }
@@ -76,5 +77,20 @@ exports.login = async (req, res) => {
     }
 }
 
+//get user profile details
+exports.getUserProfile = async (req, res) => {
+
+    const userId = req.payload
+    console.log(userId);
+    
+    try {
+  
+      const userProfile = await users.findOne({_id:userId})
+      res.status(200).json(userProfile)
+  
+    } catch (error) {
+      res.status(401).json(`requested due to ${error}`)
+    }
+  }
 
 

@@ -18,10 +18,15 @@ const userSchema = mongoose.Schema({
         require:true,
         type:String
     },
-    profile:{
+    phone:{
+        require:true,
+        type:Number
+    },
+    qualification:{
+        require:true,
         type:String
-        //profile is not required  - it depends on users to upload image
     }
+   
 })
 
 const users = mongoose.model('users',userSchema)

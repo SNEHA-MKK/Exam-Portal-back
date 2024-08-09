@@ -23,6 +23,9 @@ router.post('/adminProfile', multerConfig.single('profileImage'), adminControlle
 // path to get admin profile details
 router.get('/admin-details',adminController.getAdminProfileController)
 
+// path to get user details in profile
+router.get('/user-profile',userMiddleware,userController.getUserProfile)
+
 //path to add a category-admin
  router.post('/admin-category',jwtMiddleware,adminController.addAdCategory)
 
