@@ -1,6 +1,8 @@
 const users = require("../modal/userSchema");
 const admins = require("../modal/adminSchema")
 const jwt = require('jsonwebtoken')
+const userResult = require('../modal/userResultSchema')
+const adminQuiz = require('../modal/adminQuizSchema')
 // const userResult = require('../modal/userResultSchema')
 
 //logic to resolve the register request
@@ -82,15 +84,131 @@ exports.getUserProfile = async (req, res) => {
 
     const userId = req.payload
     console.log(userId);
-    
+
     try {
-  
-      const userProfile = await users.findOne({_id:userId})
-      res.status(200).json(userProfile)
-  
+
+        const userProfile = await users.findOne({ _id: userId })
+        res.status(200).json(userProfile)
+
     } catch (error) {
-      res.status(401).json(`requested due to ${error}`)
+        res.status(401).json(`requested due to ${error}`)
     }
-  }
+}
+
+//user - rank
+// exports.getUserRank = async (req, res) => {
+
+//     console.log('rank controller');
+
+//     const { id } = req.params; // quiz id
+
+//     console.log('quiz id:', id);
+
+//     const userId = req.payload
+//     console.log(userId);
 
 
+//     try {
+//         console.log('inside try');
+
+//         const quiz = await adminQuiz.findOne({ _id: id })
+//         console.log(quiz.title);
+
+
+//         const level = await userResult.find({ quizId: quiz.title }).sort({ score: -1 });; // find questions for the given quiz id
+//         console.log(level);
+
+//         if (!level.length) {
+//             return res.status(404).json({ message: "No one attended the quiz" });
+//         }
+
+//         // Step 2: Assign ranks based on score
+//         let rank = 1;
+//         let previousScore = null;
+//         let usersWithRanks = [];
+
+
+//         level.forEach((result, index) => {
+//             if (previousScore !== null && result.score < previousScore) {
+//                 rank = index + 1; // Update rank if score changes
+//             }
+//             usersWithRanks.push({
+//                 userId: result.userId,
+//                 score: result.score,
+//                 rank: rank
+//             });
+//             previousScore = result.score;
+//         });
+
+
+
+
+
+//         res.status(200).json(usersWithRanks);
+
+//     } catch (error) {
+//         res.status(500).json({ message: `Failed to evaluate answers: ${error.message}` });
+//     }
+// };
+
+
+exports.getUserRank = async (req, res) => {
+    console.log('rank controller');
+    const { id } = req.params; // quiz id
+    const userId = req.payload; // Assuming this is the user ID from the token
+
+    try {
+        console.log('inside try');
+
+        // Step 1: Fetch the quiz by ID
+        const quiz = await adminQuiz.findOne({ _id: id });
+        if (!quiz) {
+            return res.status(404).json({ message: "Quiz not found" });
+        }
+        console.log('quiz title:', quiz.title);
+
+        // Step 2: Fetch all results for this quiz, sorted by score in descending order
+        const results = await userResult.find({ quizId: quiz.title }).sort({ score: -1 });
+        if (!results.length) {
+            return res.status(404).json({ message: "No one attended the quiz" });
+        }
+        console.log(results);
+
+        // Step 3: Assign ranks based on score
+        let rank = 1;
+        let previousScore = results[0].score;
+        let usersWithRanks = [];
+
+        for (let i = 0; i < results.length; i++) {
+            const result = results[i];
+
+            // If the current score is less than the previous score, update the rank
+            if (result.score < previousScore) {
+                rank = i + 1;
+            }
+
+            // Update the result with the rank
+            result.rank = rank;
+            await result.save(); // Save the rank back to the database
+
+            usersWithRanks.push({
+                userId: result.userId,
+                score: result.score,
+                rank: rank
+            });
+
+            previousScore = result.score;
+        }
+
+        const response = await userResult.find({ userId: userId, quizId: quiz.title })
+        console.log(response);
+
+
+        // Step 4: Return the ranked users
+        res.status(200).json(response);
+
+    } catch (error) {
+        console.error('Error calculating ranks:', error);
+        res.status(500).json({ message: `Failed to calculate ranks: ${error.message}` });
+    }
+};

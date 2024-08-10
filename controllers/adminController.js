@@ -339,7 +339,7 @@ exports.evaluateUserAnswers = async (req, res) => {
       category: quiz[0].category, // Assuming all questions belong to the same category
       score,
       total: questions.length,
-
+      rank:""
     });
 
     console.log(quizResult);

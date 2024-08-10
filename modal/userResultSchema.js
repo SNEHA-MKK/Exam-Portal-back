@@ -20,6 +20,10 @@ const quizResultSchema = new mongoose.Schema({
     total: {
         type: Number,
         required: true
+    },
+    rank:{
+        type: Number,
+        required: true
     }
     // date: {
     //     type: Date,

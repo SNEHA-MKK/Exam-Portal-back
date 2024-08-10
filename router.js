@@ -21,52 +21,55 @@ router.post('/user/login', userController.login)
 router.post('/adminProfile', multerConfig.single('profileImage'), adminController.addAdminProfile)
 
 // path to get admin profile details
-router.get('/admin-details',adminController.getAdminProfileController)
+router.get('/admin-details', adminController.getAdminProfileController)
 
 // path to get user details in profile
-router.get('/user-profile',userMiddleware,userController.getUserProfile)
+router.get('/user-profile', userMiddleware, userController.getUserProfile)
 
 //path to add a category-admin
- router.post('/admin-category',jwtMiddleware,adminController.addAdCategory)
+router.post('/admin-category', jwtMiddleware, adminController.addAdCategory)
 
 //get all admin category
-router.get('/admin-getcategory',jwtMiddleware,adminController.getAllAdmCategory)
+router.get('/admin-getcategory', jwtMiddleware, adminController.getAllAdmCategory)
 
 //path to delete a project
-router.delete('/delete-category/:id',jwtMiddleware,adminController.deleteCategoryController)
+router.delete('/delete-category/:id', jwtMiddleware, adminController.deleteCategoryController)
 
 //path to edit category
-router.put('/update-AdmCategory/:id',jwtMiddleware,adminController.updateCatController)
+router.put('/update-AdmCategory/:id', jwtMiddleware, adminController.updateCatController)
 
 //path to add a quiz-admin
-router.post('/admin-quizz/:id',jwtMiddleware,adminController.addAdmQuiz)
+router.post('/admin-quizz/:id', jwtMiddleware, adminController.addAdmQuiz)
 
 //get all admin quiz
-router.get('/admin-getquiz/:id',jwtMiddleware,adminController.getAllAdmQuiz)
+router.get('/admin-getquiz/:id', jwtMiddleware, adminController.getAllAdmQuiz)
 
 //path to add a question-admin
-router.post('/admin-question/:id',jwtMiddleware,adminController.addAdmQuestion)
+router.post('/admin-question/:id', jwtMiddleware, adminController.addAdmQuestion)
 
 //get all admin questions
-router.get('/admin-getquestion/:id',jwtMiddleware,adminController.getAllAdmQuestion)
+router.get('/admin-getquestion/:id', jwtMiddleware, adminController.getAllAdmQuestion)
 
 //get all user quiz
-router.get('/user-getquiz',userMiddleware,adminController.getAllUserQuiz)
+router.get('/user-getquiz', userMiddleware, adminController.getAllUserQuiz)
 
 //get all user questions
-router.get('/user-getquestion/:id',userMiddleware,adminController.getAllUserQuestion)
+router.get('/user-getquestion/:id', userMiddleware, adminController.getAllUserQuestion)
 
 //evaluate users answers
 router.post('/evaluate-answers/:id', userMiddleware, adminController.evaluateUserAnswers);
 
 //get all user results
-router.get('/user-results',userMiddleware,adminController.getUserResults)
+router.get('/user-results', userMiddleware, adminController.getUserResults)
 
 //get all ADmin user results
-router.get('/admin-results',jwtMiddleware,adminController.getAdminResults)
+router.get('/admin-results', jwtMiddleware, adminController.getAdminResults)
 
 //topper - quiz wise
-router.get('/postQuiz-topper/:id',jwtMiddleware,adminController.quizTopper);
+router.get('/postQuiz-topper/:id', jwtMiddleware, adminController.quizTopper);
+
+//rank - user
+router.get('/user-rank/:id', userMiddleware, userController.getUserRank);
 
 
 //EXPORT ROUTER
