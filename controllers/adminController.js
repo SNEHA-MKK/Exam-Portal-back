@@ -4,6 +4,7 @@ const adminQuiz = require('../modal/adminQuizSchema')
 // const adminsP = require("../modal/adminSchema")
 const adminQuestion = require('../modal/adminQuestScema')
 const userResult = require('../modal/userResultSchema')
+const users = require("../modal/userSchema");
 
 
 
@@ -258,12 +259,25 @@ exports.getAllAdmQuestion = async (req, res) => {
 //get user quiz
 exports.getAllUserQuiz = async (req, res) => {
 
+
+  // console.log(req.query.search );
+  const searchKey = req.query.search 
+  console.log(searchKey);
+  
+
   // const { id } = req.params
   // console.log(id);
 
   try {
 
-    const allQuiz = await adminQuiz.find()
+    const query = {
+      title:{
+        /*options - to remove case sensitivity*/
+        $regex:searchKey,$options:'i'
+      }
+    }
+
+    const allQuiz = await adminQuiz.find(query)
     res.status(200).json(allQuiz)
 
   } catch (error) {
@@ -338,8 +352,8 @@ exports.evaluateUserAnswers = async (req, res) => {
       quizId: quiz[0].title,   // quiz[0].title,
       category: quiz[0].category, // Assuming all questions belong to the same category
       score,
-      total: questions.length,
-      rank:""
+      total: questions.length
+      // rank: ""
     });
 
     console.log(quizResult);
@@ -376,7 +390,7 @@ exports.getUserResults = async (req, res) => {
 
 //get Admin results
 exports.getAdminResults = async (req, res) => {
-  const jshd = req.params
+  // const jshd = req.params
 
   try {
 
@@ -395,20 +409,21 @@ exports.getAdminResults = async (req, res) => {
 exports.quizTopper = async (req, res) => {
 
   console.log('topper controller');
-  
+
   const { id } = req.params; // quiz id
-  
+
   console.log('quiz id:', id);
-  
+
 
   try {
-   console.log('inside try');
+    console.log('inside try');
 
-   const quiz = await adminQuiz.findOne({_id:id})
-   console.log(quiz.title);
+    const quiz = await adminQuiz.findOne({ _id: id })
+    console.log(quiz.title);
    
-   
-    const topper = await userResult.find({ quizId:quiz.title }); // find questions for the given quiz id
+
+
+    const topper = await userResult.find({ quizId: quiz.title }); // find questions for the given quiz id
     console.log(topper);
 
 
@@ -416,18 +431,22 @@ exports.quizTopper = async (req, res) => {
       return res.status(404).json({ message: "No one attended the quiz" });
     }
 
-   
-     let QuizTopper = topper[0]
-     topper.forEach(topper => {
-        if(topper.score>QuizTopper.score){
-          QuizTopper=topper;
-        }
-     });
 
-   console.log(QuizTopper);
-   
-   res.status(200).json(QuizTopper);
+    let QuizTopper = topper[0]
+    topper.forEach(topper => {
+      if (topper.score > QuizTopper.score) {
+        QuizTopper = topper;
+      }
+    });
+
+    console.log(QuizTopper);
+    console.log(QuizTopper.userId);
     
+    const userName = await users.findOne({ _id: QuizTopper.userId})
+    console.log(userName);
+
+    res.status(200).json(QuizTopper);
+
   } catch (error) {
     res.status(500).json({ message: `Failed to evaluate answers: ${error.message}` });
   }
