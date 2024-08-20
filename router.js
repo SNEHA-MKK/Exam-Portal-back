@@ -71,6 +71,10 @@ router.get('/postQuiz-topper/:id', jwtMiddleware, adminController.quizTopper);
 //rank - user
 router.get('/user-rank/:id', userMiddleware, userController.getUserRank);
 
+//path to edit profile
+router.put('/update-profile',userMiddleware,multerConfig.single('profile'),userController.updateProfileController)
+
+
 
 //EXPORT ROUTER
 module.exports = router

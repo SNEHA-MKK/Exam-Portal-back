@@ -25,6 +25,10 @@ const userSchema = mongoose.Schema({
     qualification:{
         require:true,
         type:String
+    },
+    profile:{
+        require:true,
+        type:String
     }
    
 })

@@ -1,8 +1,9 @@
-const users = require("../modal/userSchema");
+
 const admins = require("../modal/adminSchema")
 const jwt = require('jsonwebtoken')
 const userResult = require('../modal/userResultSchema')
 const adminQuiz = require('../modal/adminQuizSchema')
+const users = require("../modal/userSchema");
 // const userResult = require('../modal/userResultSchema')
 
 //logic to resolve the register request
@@ -210,5 +211,61 @@ exports.getUserRank = async (req, res) => {
     } catch (error) {
         console.error('Error calculating ranks:', error);
         res.status(500).json({ message: `Failed to calculate ranks: ${error.message}` });
+    }
+};
+
+
+// exports.updateProfileController = async(req,res)=>{
+//     const userId = req.payload
+
+//     const {username,mailId,password,phone,qualification,profile} = req.body
+
+//     profileImage = req.file?req.file.filename:profile
+//     console.log(profileImage);
+    
+
+//     try{
+      
+//        const existingUsers = await users.findByIdAndUpdate({_id:userId},{username,mailId,password,phone,qualification,profile:profileImage},{new:true})
+
+//        console.log(existingUsers);
+       
+       
+//        await existingUsers.save()
+      
+       
+//        res.status(200).json(existingUsers)
+
+//     }catch (error){
+//        res.status(401).json(`requested failed due to ${error} `)
+//     }
+// }
+
+exports.updateProfileController = async (req, res) => {
+    const userId = req.payload;
+console.log(userId);
+
+    if (!userId) {
+        return res.status(401).json("Unauthorized: No user ID in request payload");
+    }
+
+    const { username, mailId, password, phone, qualification, profile } = req.body;
+    const profileImage = req.file ? req.file.filename : profile;
+
+    try {
+        const existingUser = await users.findByIdAndUpdate(
+            { _id: userId },
+            { username, mailId, password, phone, qualification, profile: profileImage },
+            { new: true }
+        );
+
+        if (!existingUser) {
+            return res.status(404).json("User not found");
+        }
+
+        await existingUser.save();
+        res.status(200).json(existingUser);
+    } catch (error) {
+        res.status(500).json(`Request failed due to ${error}`);
     }
 };
