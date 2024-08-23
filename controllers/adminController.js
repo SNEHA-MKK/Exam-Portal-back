@@ -304,7 +304,10 @@ exports.getAllUserQuestion = async (req, res) => {
 
 // To evaluate user answers
 exports.evaluateUserAnswers = async (req, res) => {
+  // console.log("hgfgfghg");
+  
   const { id } = req.params; // quiz id
+
   const { userAnswers } = req.body; // user's answers { questionId: answer, ... }
   // const userids = req.payload
 
@@ -352,7 +355,7 @@ exports.evaluateUserAnswers = async (req, res) => {
       quizId: quiz[0].title,   // quiz[0].title,
       category: quiz[0].category, // Assuming all questions belong to the same category
       score,
-      total: questions.length
+      total: questions.length,
       // rank: ""
     });
 

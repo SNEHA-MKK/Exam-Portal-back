@@ -176,7 +176,7 @@ exports.getUserRank = async (req, res) => {
         console.log(results);
 
         // Step 3: Assign ranks based on score
-        let rank = 1;
+        let level = 1;
         let previousScore = results[0].score;
         let usersWithRanks = [];
 
@@ -185,17 +185,17 @@ exports.getUserRank = async (req, res) => {
 
             // If the current score is less than the previous score, update the rank
             if (result.score < previousScore) {
-                rank = i + 1;
+                level = i + 1;
             }
 
             // Update the result with the rank
-            result.rank = rank;
+            result.rank = level;
             await result.save(); // Save the rank back to the database
 
             usersWithRanks.push({
                 userId: result.userId,
                 score: result.score,
-                rank: rank
+                rank: level
             });
 
             previousScore = result.score;

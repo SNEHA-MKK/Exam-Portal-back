@@ -11,6 +11,8 @@ const userMiddleware = (req, res, next) => {
     try {
         const jwtResponse = jwt.verify(token, 'supersecretkey')
         console.log(jwtResponse);
+        // console.log("sample");
+        
         req.payload = jwtResponse.userId
         next()
 

@@ -21,7 +21,7 @@ const quizResultSchema = new mongoose.Schema({
         type: Number,
         required: true
     }
-    // rank:{
+    // rank: {
     //     type: Number,
     //     required: true
     // }
