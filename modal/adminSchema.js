@@ -8,7 +8,20 @@ const adminSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    role: {
+        type: String,
+        required: true
+    },
+    phone:{
+        type: Number,
+        required: true  
     }
+
 })
 
 const admins = mongoose.model("admins", adminSchema)
