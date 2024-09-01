@@ -111,6 +111,34 @@ exports.deleteCategoryController = async (req, res) => {
   }
 }
 
+//delete admin quiz
+
+exports.deleteQuizController = async (req, res) => {
+  console.log(req);
+
+  const { id } = req.params
+  try {
+    const result = await adminQuiz.findByIdAndDelete({ _id: id })
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+  }
+}
+
+//delete admin quest
+
+exports.deleteQuestController = async (req, res) => {
+  console.log(req);
+
+  const { id } = req.params
+  try {
+    const result = await adminQuestion.findByIdAndDelete({ _id: id })
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+  }
+}
+
 //edit admin category
 exports.updateCatController = async (req, res) => {
 
@@ -122,6 +150,23 @@ exports.updateCatController = async (req, res) => {
     const existingCategory = await adminCat.findByIdAndUpdate({ _id: id }, { title, description }, { new: true })
     await existingCategory.save()
     res.status(200).json(existingCategory)
+
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+  }
+}
+
+//edit admin quiz
+exports.updateQuizController = async (req, res) => {
+
+  const { id } = req.params
+  const { title, description, maxMarks, numberOfQuestions } = req.body
+
+
+  try {
+    const existingQuiz = await adminQuiz.findByIdAndUpdate({ _id: id }, { title, description,maxMarks,numberOfQuestions }, { new: true })
+    await existingQuiz.save()
+    res.status(200).json(existingQuiz)
 
   } catch (error) {
     res.status(401).json(`requested due to ${error}`)
@@ -256,14 +301,29 @@ exports.getAllAdmQuestion = async (req, res) => {
   }
 }
 
+//get home quiz
+exports.getAllHomeQuiz = async (req, res) => {
+
+
+
+  try {
+
+    const allQuiz = await adminQuiz.find()
+    res.status(200).json(allQuiz)
+
+  } catch (error) {
+    res.status(401).json(`requested due to ${error}`)
+  }
+}
+
 //get user quiz
 exports.getAllUserQuiz = async (req, res) => {
 
 
   // console.log(req.query.search );
-  const searchKey = req.query.search 
+  const searchKey = req.query.search
   console.log(searchKey);
-  
+
 
   // const { id } = req.params
   // console.log(id);
@@ -271,9 +331,9 @@ exports.getAllUserQuiz = async (req, res) => {
   try {
 
     const query = {
-      title:{
+      title: {
         /*options - to remove case sensitivity*/
-        $regex:searchKey,$options:'i'
+        $regex: searchKey, $options: 'i'
       }
     }
 
@@ -305,7 +365,7 @@ exports.getAllUserQuestion = async (req, res) => {
 // To evaluate user answers
 exports.evaluateUserAnswers = async (req, res) => {
   // console.log("hgfgfghg");
-  
+
   const { id } = req.params; // quiz id
 
   const { userAnswers } = req.body; // user's answers { questionId: answer, ... }
@@ -423,7 +483,7 @@ exports.quizTopper = async (req, res) => {
 
     const quiz = await adminQuiz.findOne({ _id: id })
     console.log(quiz.title);
-   
+
 
 
     const topper = await userResult.find({ quizId: quiz.title }); // find questions for the given quiz id
@@ -444,8 +504,8 @@ exports.quizTopper = async (req, res) => {
 
     console.log(QuizTopper);
     console.log(QuizTopper.userId);
-    
-    const userName = await users.findOne({ _id: QuizTopper.userId})
+
+    const userName = await users.findOne({ _id: QuizTopper.userId })
     console.log(userName);
 
     res.status(200).json(QuizTopper);

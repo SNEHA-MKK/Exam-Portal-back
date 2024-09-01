@@ -24,7 +24,7 @@ router.post('/adminProfile', multerConfig.single('profileImage'), adminControlle
 router.get('/admin-details', adminController.getAdminProfileController)
 
 // path to get user details in profile
-router.get('/user-profile', userMiddleware, userController.getUserProfile)
+router.get('/users-profile', userController.getUsersProfile)
 
 //path to add a category-admin
 router.post('/admin-category', jwtMiddleware, adminController.addAdCategory)
@@ -35,8 +35,19 @@ router.get('/admin-getcategory', jwtMiddleware, adminController.getAllAdmCategor
 //path to delete a project
 router.delete('/delete-category/:id', jwtMiddleware, adminController.deleteCategoryController)
 
+//path to delete a quiz
+router.delete('/delete-quiz/:id', jwtMiddleware, adminController.deleteQuizController)
+
+//path to delete a quest
+router.delete('/delete-quest/:id', jwtMiddleware, adminController.deleteQuestController)
+
 //path to edit category
 router.put('/update-AdmCategory/:id', jwtMiddleware, adminController.updateCatController)
+
+//path to edit quiz
+router.put('/update-AdmQuiz/:id', jwtMiddleware, adminController.updateQuizController)
+
+
 
 //path to add a quiz-admin
 router.post('/admin-quizz/:id', jwtMiddleware, adminController.addAdmQuiz)
@@ -52,6 +63,10 @@ router.get('/admin-getquestion/:id', jwtMiddleware, adminController.getAllAdmQue
 
 //get all user quiz
 router.get('/user-getquiz', userMiddleware, adminController.getAllUserQuiz)
+
+//get home quiz
+
+router.get('/home-getquiz', adminController.getAllHomeQuiz)
 
 //get all user questions
 router.get('/user-getquestion/:id', userMiddleware, adminController.getAllUserQuestion)
@@ -74,6 +89,9 @@ router.get('/user-rank/:id', userMiddleware, userController.getUserRank);
 //path to edit profile
 router.put('/update-profile',userMiddleware,multerConfig.single('profile'),userController.updateProfileController)
 
+
+//path to add a userFeedback
+router.post('/user-feedback', userMiddleware,userController.addUserFeedback )
 
 
 //EXPORT ROUTER

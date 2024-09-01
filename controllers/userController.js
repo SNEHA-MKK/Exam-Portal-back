@@ -3,7 +3,8 @@ const admins = require("../modal/adminSchema")
 const jwt = require('jsonwebtoken')
 const userResult = require('../modal/userResultSchema')
 const adminQuiz = require('../modal/adminQuizSchema')
-const users = require("../modal/userSchema");
+const users = require("../modal/userSchema")
+const userFeedback = require("../modal/userFeedback")
 // const userResult = require('../modal/userResultSchema')
 
 //logic to resolve the register request
@@ -81,17 +82,20 @@ exports.login = async (req, res) => {
 }
 
 //get user profile details
-exports.getUserProfile = async (req, res) => {
+exports.getUsersProfile = async (req, res) => {
+    console.log("sjdgh");
 
-    const userId = req.payload
-    console.log(userId);
+
 
     try {
 
-        const userProfile = await users.findOne({ _id: userId })
+        const userProfile = await users.find()
         res.status(200).json(userProfile)
+        console.log(userProfile);
+
 
     } catch (error) {
+
         res.status(401).json(`requested due to ${error}`)
     }
 }
@@ -222,18 +226,18 @@ exports.getUserRank = async (req, res) => {
 
 //     profileImage = req.file?req.file.filename:profile
 //     console.log(profileImage);
-    
+
 
 //     try{
-      
+
 //        const existingUsers = await users.findByIdAndUpdate({_id:userId},{username,mailId,password,phone,qualification,profile:profileImage},{new:true})
 
 //        console.log(existingUsers);
-       
-       
+
+
 //        await existingUsers.save()
-      
-       
+
+
 //        res.status(200).json(existingUsers)
 
 //     }catch (error){
@@ -243,7 +247,7 @@ exports.getUserRank = async (req, res) => {
 
 exports.updateProfileController = async (req, res) => {
     const userId = req.payload;
-console.log(userId);
+    console.log(userId);
 
     if (!userId) {
         return res.status(401).json("Unauthorized: No user ID in request payload");
@@ -269,3 +273,38 @@ console.log(userId);
         res.status(500).json(`Request failed due to ${error}`);
     }
 };
+
+//to add category
+exports.addUserFeedback = async (req, res) => {
+    console.log('inside add feedback');
+    console.log(req.payload);
+    const userId = req.payload
+    console.log( req.body);
+    
+    const {feedback} = req.body
+
+
+    // const { description } = req.body
+    // console.log(description);
+
+    try {
+
+        const existingUser = await users.findOne({ _id: userId })
+        console.log(existingUser);
+
+        const newFeedback = new userFeedback({
+            userId,
+            name: existingUser.username,
+            mail: existingUser.mailId,
+            qualification: existingUser.qualification,
+            description: feedback
+        })
+        await newFeedback.save() //to save the project in mongodb
+        res.status(200).json(newFeedback)
+
+
+    } catch (error) {
+        res.status(401).json(`requested due to ${error}`)
+        console.log(error);
+    }
+}
