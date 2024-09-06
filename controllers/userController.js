@@ -297,7 +297,8 @@ exports.addUserFeedback = async (req, res) => {
             name: existingUser.username,
             mail: existingUser.mailId,
             qualification: existingUser.qualification,
-            description: feedback
+            description: feedback,
+            profile:existingUser.profile
         })
         await newFeedback.save() //to save the project in mongodb
         res.status(200).json(newFeedback)
@@ -308,3 +309,17 @@ exports.addUserFeedback = async (req, res) => {
         console.log(error);
     }
 }
+
+// }
+
+//get all feedbacks - user
+exports.getAllFeedbacks = async (req, res) => {
+    try {
+  
+      const allFeedbacks = await userFeedback.find()
+      res.status(200).json(allFeedbacks)
+  
+    } catch (error) {
+      res.status(401).json(`requested due to ${error}`)
+    }
+  }

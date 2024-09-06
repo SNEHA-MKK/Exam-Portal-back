@@ -93,6 +93,8 @@ router.put('/update-profile',userMiddleware,multerConfig.single('profile'),userC
 //path to add a userFeedback
 router.post('/user-feedback', userMiddleware,userController.addUserFeedback )
 
+//get all feedback - user
+router.get('/get-reviews', userController.getAllFeedbacks)
 
 //EXPORT ROUTER
 module.exports = router

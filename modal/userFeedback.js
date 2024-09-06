@@ -28,6 +28,10 @@ const userFeedback = new mongoose.Schema({
     description: {
         type: String,
         required: true
+    },
+    profile:{
+        require:true,
+        type:String
     }
 
 })
